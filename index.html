@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head><title>Simple Node App Mongo</title></head>
+<body>
+<h1>Simple Node App (MongoDB)</h1>
+
+<h3>Create User</h3>
+<input id="username" placeholder="username">
+<button onclick="createUser()">Add User</button>
+
+<h3>Create Note</h3>
+<input id="note" placeholder="your note">
+<input id="userId" placeholder="user id">
+<button onclick="createNote()">Add Note</button>
+
+<h3>Users</h3><pre id="userList"></pre>
+
+<h3>Notes</h3><pre id="noteList"></pre>
+
+<script>
+async function createUser(){
+  const username=document.getElementById("username").value;
+  await fetch("/users",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({username})
+  });
+  loadUsers();
+}
+
+async function createNote(){
+  const text=document.getElementById("note").value;
+  const userId=document.getElementById("userId").value;
+  await fetch("/notes",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({text,userId})
+  });
+  loadNotes();
+}
+
+async function loadUsers(){
+  const data=await (await fetch("/users")).json();
+  document.getElementById("userList").textContent=JSON.stringify(data,null,2);
+}
+async function loadNotes(){
+  const data=await (await fetch("/notes")).json();
+  document.getElementById("noteList").textContent=JSON.stringify(data,null,2);
+}
+
+loadUsers();
+loadNotes();
+</script>
+</body>
+</html>
